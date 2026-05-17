@@ -1,7 +1,6 @@
 package com.example.demo.mvc
 
 import com.example.demo.schedule.JobParams
-import org.apache.camel.Message
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.ResolvableType

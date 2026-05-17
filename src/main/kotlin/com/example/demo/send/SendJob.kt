@@ -12,7 +12,7 @@ class SendJob : Job {
     lateinit var notificationProducer : ProducerTemplate
 
     override fun execute(context: JobExecutionContext?) {
-        notificationProducer.sendBody(context?.jobDetail?.jobDataMap?.getString("text") ?: "No text found");
+        notificationProducer.sendBody(context?.jobDetail?.jobDataMap?.getString("text") ?: "No text found")
     }
 
 }
