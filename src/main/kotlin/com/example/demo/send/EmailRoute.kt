@@ -1,6 +1,7 @@
 package com.example.demo.send
 
 import org.apache.camel.builder.RouteBuilder
+import org.apache.camel.model.dataformat.JsonLibrary
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
@@ -37,6 +38,7 @@ class EmailRoute(
                     .build()
                     .toUriString()
             )
-            .log("Sending message: \${body}")
+            .unmarshal().json(JsonLibrary.Jackson, SendMessage::class.java)
+            .log("Sending email message: \${body}")
     }
 }

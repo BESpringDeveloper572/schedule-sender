@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.integration.camel.dsl.Camel
 import org.springframework.integration.dsl.IntegrationFlow
 import org.springframework.integration.dsl.integrationFlow
+import org.springframework.integration.http.support.DefaultHttpHeaderMapper
 import org.springframework.integration.webflux.dsl.WebFlux
 import reactor.core.publisher.Mono
 
@@ -21,6 +22,9 @@ class WebFluxFlow {
                 .apply {
                     requestMapping { m -> m.methods(HttpMethod.POST) }
                     requestPayloadType(ResolvableType.forClassWithGenerics(Mono::class.java, SendRequest::class.java))
+                    headerMapper(DefaultHttpHeaderMapper().apply {
+                        setInboundHeaderNames("userId", "HTTP_REQUEST_HEADERS")
+                    })
                     statusCodeFunction { _ -> HttpStatus.CREATED }
                 })
         {

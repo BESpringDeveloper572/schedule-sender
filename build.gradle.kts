@@ -29,9 +29,10 @@ dependencies {
     implementation("org.apache.camel.springboot:camel-spring-boot-starter")
     implementation("org.apache.camel.springboot:camel-spring-rabbitmq-starter")
     implementation("org.apache.camel.springboot:camel-quartz-starter")
+    implementation("org.apache.camel.springboot:camel-jackson3-starter")
     implementation("org.apache.camel.springboot:camel-reactor-starter")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("tools.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -46,8 +47,4 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
     }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }

@@ -9,10 +9,15 @@ import org.springframework.stereotype.Service
 @Service
 class SendJob : Job {
     @Produce("direct:sendNotification")
-    lateinit var notificationProducer : ProducerTemplate
+    lateinit var notificationProducer: ProducerTemplate
 
     override fun execute(context: JobExecutionContext?) {
-        notificationProducer.sendBody(context?.jobDetail?.jobDataMap?.getString("text") ?: "No text found")
+        notificationProducer.sendBody(
+            SendMessage(
+                context?.jobDetail?.jobDataMap?.getString("text") ?: "No text found",
+                context?.jobDetail?.jobDataMap?.getString("userId") ?: "No userId found"
+            )
+        )
     }
 
 }

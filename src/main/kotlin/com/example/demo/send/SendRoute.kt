@@ -12,6 +12,7 @@ class SendRoute(
 ) : RouteBuilder() {
     override fun configure() {
         from("direct:sendNotification")
+            .marshal().json()
             .to(
                 UriComponentsBuilder.newInstance()
                     .scheme("spring-rabbitmq")
