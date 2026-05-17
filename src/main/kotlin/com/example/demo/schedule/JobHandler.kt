@@ -1,12 +1,14 @@
-package com.example.demo
+package com.example.demo.schedule
 
+import com.example.demo.mvc.SendRequest
+import com.example.demo.send.SendJob
 import org.quartz.JobBuilder
 import org.quartz.JobKey
 import org.quartz.Scheduler
 import org.quartz.TriggerBuilder
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
-import java.time.LocalDateTime
+import java.time.Instant
 import java.time.ZoneId
 import java.util.*
 
@@ -15,14 +17,22 @@ class JobHandler(val scheduler: Scheduler) {
 
     fun schedule(jobParams: JobParams): Flux<Map<String, Any>> {
         val jobKey = JobKey.jobKey(UUID.randomUUID().toString())
-        val job = JobBuilder.newJob(LogJob::class.java)
+        val job = JobBuilder.newJob(SendJob::class.java)
                 .storeDurably()
-                .usingJobData("text", jobParams.text)
+                .usingJobData("text", jobParams.sendRequest.text)
+                .usingJobData("userId", jobParams.userId)
                 .withIdentity(jobKey)
-                .withDescription("Invoking my job")
+                .withDescription("Schedule send message to through all methods")
                 .build()
+        val zoneId = Optional.ofNullable(jobParams)
+            .map(JobParams::sendRequest)
+            .map(SendRequest::timeZone)
+            .map(ZoneId::of)
+            .orElse(ZoneId.systemDefault())
+        val timestamp = Instant.ofEpochMilli(jobParams.sendRequest.timestamp)
+            .atZone(zoneId)
         val runOnceTrigger = TriggerBuilder.newTrigger()
-                .startAt(Date.from(LocalDateTime.now().plusSeconds(jobParams.delay).atZone(ZoneId.systemDefault()).toInstant()))
+                .startAt(Date.from(timestamp.toInstant()))
                 .build()
         val jobDate = scheduler.scheduleJob(job, runOnceTrigger)
         val map = mapOf("status" to "ok", "schedule" to jobDate)

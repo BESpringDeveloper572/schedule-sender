@@ -6,3 +6,16 @@ spring:
     properties:
       org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
   datasource.url: jdbc:postgresql://localhost:5432/postgres
+
+send-notification-exchange: send-notification
+sms:
+  queue: sms
+  max-workers: 2
+  max-messages-size: 1
+  polling-interval: 5000
+
+email:
+  queue: email
+  max-workers: 4
+  max-messages-size: 20
+  polling-interval: 1000
