@@ -8,6 +8,7 @@ import org.quartz.Scheduler
 import org.quartz.TriggerBuilder
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import java.time.Instant
 import java.time.ZoneId
 import java.util.*
@@ -15,7 +16,7 @@ import java.util.*
 @Service
 class JobHandler(val scheduler: Scheduler) {
 
-    fun schedule(jobParams: JobParams): Flux<Map<String, Any>> {
+    fun schedule(jobParams: JobParams): Mono<ScheduleResponse> {
         val jobKey = JobKey.jobKey(UUID.randomUUID().toString())
         val job = JobBuilder.newJob(SendJob::class.java)
                 .storeDurably()
@@ -35,7 +36,6 @@ class JobHandler(val scheduler: Scheduler) {
                 .startAt(Date.from(timestamp.toInstant()))
                 .build()
         val jobDate = scheduler.scheduleJob(job, runOnceTrigger)
-        val map = mapOf("status" to "ok", "schedule" to jobDate)
-        return Flux.just(map)
+        return Mono.just(ScheduleResponse("ok", jobDate))
     }
 }
